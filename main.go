@@ -19,7 +19,7 @@ func main() {
 		w := app.NewWindow(
 			app.WithWidth(ui.Dp(400)),
 			app.WithHeight(ui.Dp(720)),
-			app.WithTitle("Decred"),
+			app.WithTitle("Decred UI"),
 		)
 		if err := loop(w); err != nil {
 			log.Fatal(err)
