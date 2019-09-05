@@ -16,7 +16,11 @@ import (
 
 func main() {
 	go func() {
-		w := app.NewWindow()
+		w := app.NewWindow(
+			app.WithWidth(ui.Dp(400)),
+			app.WithHeight(ui.Dp(720)),
+			app.WithTitle("Decred"),
+		)
 		if err := loop(w); err != nil {
 			log.Fatal(err)
 		}
