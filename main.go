@@ -1,60 +1,28 @@
 package main
 
 import (
-	"image/color"
-	"log"
-
-	"gioui.org/ui"
-	"gioui.org/ui/app"
-	"gioui.org/ui/layout"
-	"gioui.org/ui/measure"
-	"gioui.org/ui/paint"
-	"gioui.org/ui/text"
-	"golang.org/x/image/font/gofont/goregular"
-	"golang.org/x/image/font/sfnt"
+	"fyne.io/fyne"
+	"fyne.io/fyne/app"
+	"fyne.io/fyne/layout"
+	"fyne.io/fyne/theme"
+	"fyne.io/fyne/widget"
 )
 
 func main() {
-	go func() {
-		w := app.NewWindow(
-			app.WithWidth(ui.Dp(400)),
-			app.WithHeight(ui.Dp(720)),
-			app.WithTitle("Decred UI"),
-		)
-		if err := loop(w); err != nil {
-			log.Fatal(err)
-		}
-	}()
-	app.Main()
-}
-
-func loop(w *app.Window) error {
-	regular, err := sfnt.Parse(goregular.TTF)
-	if err != nil {
-		panic("failed to load font")
-	}
-	var cfg app.Config
-	var faces measure.Faces
-	grey := color.RGBA{17, 0, 0, 190}
-	face := faces.For(regular, ui.Sp(30))
-	message := "Welcome to \nDecred iOS Wallet"
-	ops := new(ui.Ops)
-	for {
-		e := <-w.Events()
-		switch e := e.(type) {
-		case app.DestroyEvent:
-			return e.Err
-		case app.UpdateEvent:
-			cfg = e.Config
-			faces.Reset(&cfg)
-			cs := layout.RigidConstraints(e.Size)
-			ops.Reset()
-			var material ui.MacroOp
-			material.Record(ops)
-			paint.ColorOp{Color: grey}.Add(ops)
-			material.Stop()
-			text.Label{Material: material, Face: face, Alignment: text.Start, Text: message}.Layout(ops, cs)
-			w.Update(ops)
-		}
-	}
+	a := app.New()
+	a.Settings().SetTheme(theme.LightTheme())
+	w := a.NewWindow("decred")
+	w.Resize(fyne.NewSize(340, 600))
+	w.SetContent(widget.NewVBox(
+		widget.NewLabelWithStyle("decred", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		widget.NewLabelWithStyle("Welcome to \nDecred iOS Wallet", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+		layout.NewSpacer(),
+		widget.NewButton("Create new wallet", func() {
+			a.Quit()
+		}),
+		widget.NewButton("Restore an existing wallet", func() {
+			a.Quit()
+		}),
+	))
+	w.ShowAndRun()
 }
